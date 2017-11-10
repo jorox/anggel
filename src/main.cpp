@@ -31,7 +31,7 @@ void on_trackbar( int , void* data)
 {
   Slider * info = (struct Slider*) data;
   std::list<MyMat>::iterator it = *(info->start);
-  std::advance(it, *(info->shift)-1 );
+  std::advance(it, *(info->shift) );
   std::cout << "curr = " << *(info->shift)-1 << std::endl;
   imshow( "imgDisplay", it->_mat );
 }
@@ -54,7 +54,7 @@ void onmouse(int event, int x, int y, int flags, void* data)
       std::cout << "Click= " << x << ", " << y << std::endl;
       Slider * info = (struct Slider*) data;
       std::list<MyMat>::iterator it = *(info->start);
-      std::advance (it, *(info->shift)-1);
+      std::advance (it, *(info->shift));
       Point newPoint (x, y);
 
       circle (it->_mat, newPoint, 5, Scalar(0,255,0), -5); // draw a circle
