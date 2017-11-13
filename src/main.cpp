@@ -27,6 +27,15 @@ struct Slider
   const std::list<MyMat>::iterator* start;
 };
 
+
+void help()
+{
+  std::cout << "\nThis program demonstrates line finding with the Hough transform.\n"
+    "Usage:\n"
+    "./houghlines <image_name>, Default is pic1.jpg\n" << std::endl;
+}
+
+
 void on_trackbar( int , void* data)
 {
   Slider * info = (struct Slider*) data;
@@ -57,12 +66,14 @@ void onmouse(int event, int x, int y, int flags, void* data)
       std::advance (it, *(info->shift));
       Point newPoint (x, y);
 
-      circle (it->_mat, newPoint, 5, Scalar(0,255,0), -5); // draw a circle
+      circle (it->_mat, newPoint, 8, Scalar(0,255,0), -8); // draw a circle
 
       if (it->_points.size() % 2 != 0){
         double ang = angle ( it->_points.front(), newPoint );
-        putText ( it->_mat, std::to_string(ang), it->_points.front() + Point(0, 20),
-                  1, 1, Scalar(0,255,0), 2);
+        putText ( it->_mat, std::to_string(ang), it->_points.front() + Point(0, 50),
+                  1, 1, Scalar(0,255,0), 1);
+        line ( it->_mat, it->_points.front(), newPoint,
+               Scalar(0,255,0), 2);
       }
 
       it->_points.push_front(newPoint); // add point to image
@@ -74,41 +85,7 @@ double calc_angle(double y, double yp, double x, double xp){
   return atan ( (y - yp) / (x - xp) ) / 3.1415 * 180.;
 }
 
-/**
 
-void write_results( std::list<MyMat>& imgList)
-{
-  std::ofstream ofs;
-  ofs.open ("results.txt", std::ofstream::out);
-  ofs << "#filename theta1 theta2 theta3 points";
-
-  for (std::list<MyMat>::iterator it = imgList.begin();
-       it != imgList.end(); ++it){
-
-    //write new filename
-    ofs << std::endl << it->_fname;
-
-    //calculate the three angles
-    double theta1 = calc_angle ( it->_pointy[1], it->_pointy[0],
-                                 it->_pointx[1], it->_pointx[0] );
-    double theta2 = calc_angle ( it->_pointy[2], it->_pointy[3],
-                                 it->_pointx[3], it->_pointx[2] );
-    double theta3 = calc_angle ( it->_pointy[4], it->_pointy[5],
-                                 it->_pointx[5], it->_pointx[4] );
-
-    // write the angles
-    ofs << " " << theta1 << " " << theta2 << " " << theta3;
-
-    // write points
-    for (int i = 0; i<6; ++i){
-      ofs << " (" << it->_pointx[i] << "," << it->_pointy[i] <<")";
-    }
-  }
-
-  ofs.close();
-  std::cout << "... done writing to results.txt" << std::endl;
-}
-**/
 int main (int argc, char** argv)
 {
 
@@ -151,6 +128,10 @@ int main (int argc, char** argv)
 
   waitKey();
   //write_results (images);
+  for ( std::list<MyMat>::iterator it = images.begin(); it!=images.end(); ++it){
+    std::cout << "wrtiting " << it->_fname << std::endl;
+    imwrite (it->_fname, it->_mat);
+  }
   return 0;
 
 }
